@@ -18,44 +18,85 @@ namespace NotesAppApi.Infrastructure
         }
         public async Task AddNote(Note item)
         {
-            await _context.Notes.InsertOneAsync(item); 
+            try{
+                    await _context.Notes.InsertOneAsync(item); 
+        
+            }
+            catch(Exception ex){
+                throw ex; 
+            }    
         }
 
         public async Task<IEnumerable<Note>> GetAllNotes()
         {
-            return await _context.Notes.Find(_ => true).ToListAsync(); 
+            try{                    
+                return await _context.Notes.Find(_ => true).ToListAsync(); 
+            }
+            catch (Exception ex){
+             throw ex; 
+            }
         }
 
         public async Task<Note> GetNote(string id)
         {
+            try {
             var filter = Builders<Note>.Filter.Eq("Id", id);
             return await _context.Notes.Find(filter).FirstOrDefaultAsync(); 
+        
+            }
+            catch (Exception ex){
+                throw ex; 
+            }
         }
 
         public async Task<DeleteResult> RemoveAllNotes()
         {
-             return await _context.Notes.DeleteManyAsync(new BsonDocument());
+            try{
+                    return await _context.Notes.DeleteManyAsync(new BsonDocument());
+            }
+            catch(Exception ex){
+                throw ex; 
+            }
         }
 
         public async Task<DeleteResult> RemoveNote(string id)
         {
-            return await _context.Notes.DeleteOneAsync(Builders<Note>.Filter.Eq("Id", id));
+
+            try{
+                return await _context.Notes.DeleteOneAsync(Builders<Note>.Filter.Eq("Id", id));
+            }
+            catch(Exception ex){
+                throw ex; 
+            }
         }
 
         public async Task<UpdateResult> UpdateNote(string id, string body)
         {
-            var filter = Builders<Note>.Filter.Eq( s => s.Id ,id);
-            var update = Builders<Note>.Update
+            try{
+                var filter = Builders<Note>.Filter.Eq( s => s.Id ,id);
+                var update = Builders<Note>.Update
                                 .Set(s => s.Body, body)
                                 .CurrentDate(s => s.UpdatedOn);
-            return await _context.Notes.UpdateOneAsync(filter, update);
+                return await _context.Notes.UpdateOneAsync(filter, update);
+        
+            }
+            catch(Exception ex){
+                throw ex; 
+            }    
         }
 
-        public async Task<ReplaceOneResult> UpdateNote(string id, Note item){
-            return await _context.Notes
+        public async Task<ReplaceOneResult> UpdateNote(string id, Note item)
+        {
+            try{
+                 return await _context.Notes
                              .ReplaceOneAsync(n => n.Id.Equals(id)
                                                  , item
                                                  , new UpdateOptions { IsUpsert = true });
+        
+            }
+            catch(Exception ex){
+                throw ex; 
+            }    
         }
 
        
