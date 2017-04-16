@@ -32,7 +32,13 @@ namespace WebApplicationBasic
         {
             // Add framework services.
             services.AddMvc();
-
+            // Add service and create Policy with options 
+            services.AddCors(options => { options.AddPolicy("CorsPolicy", 
+                                      builder => builder.AllowAnyOrigin() 
+                                                        .AllowAnyMethod() 
+                                                        .AllowAnyHeader() 
+                                                        .AllowCredentials()); 
+                                  }); 
             services.Configure<Settings>(options => {
                 options.ConnectionString = Configuration.GetSection("MongoConnection:ConnectionString").Value;
                 options.Database = Configuration.GetSection("MongoConnection:Database").Value; 
@@ -60,7 +66,7 @@ namespace WebApplicationBasic
             }
 
             app.UseStaticFiles();
-
+            app.UseCors("CorsPolicy");
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
